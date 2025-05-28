@@ -90,7 +90,10 @@
 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.ase</span><span class="w"> </span><span class="kn">import</span> <span class="n">AseAtomsAdaptor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mofchecker</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOFChecker</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mofchecker</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOFChecker</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;please run pip install git+https://github.com/sxm13/mofchecker_2.0.git@main&quot;</span><span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">CoREMOF.utils.atoms_definitions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATR</span><span class="p">,</span> <span class="n">Coef_A</span><span class="p">,</span> <span class="n">Coef_C</span> <span class="c1">#, BO_list, metals4check</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">gemmi</span><span class="w"> </span><span class="kn">import</span> <span class="n">cif</span> <span class="k">as</span> <span class="n">CIF</span>
