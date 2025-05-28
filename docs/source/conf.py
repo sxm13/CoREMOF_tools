@@ -38,7 +38,7 @@ extensions = [
     'sphinx_autodoc_typehints'
 ]
 autodoc_mock_imports = [
-    "tensorflow", "torch", "zeopp", "pymatgen", "ase", "molSimplify","optree",
+    "tensorflow", "torch", "zeopp", "pymatgen", "ase", "molSimplify","optree","ccdc",
     "PACMAN_charge", "mofchecker", "gemmi", "phonopy", "xgboost", 'juliacall', 'mofid','keras',
     'cloudpickle','scikit-learn==1.3.2','networkx', 'selfies', 'mendeleev', 'requests'
 ]
