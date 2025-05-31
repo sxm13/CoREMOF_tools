@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoREMOF package &mdash; CoREMOF 0.1.9 documentation</title>
+  <title>CoREMOF package &mdash; CoREMOF 0.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
@@ -54,6 +54,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoREMOF.curate">CoREMOF.curate module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.MOSAEC"><code class="docutils literal notranslate"><span class="pre">MOSAEC()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.ase_format"><code class="docutils literal notranslate"><span class="pre">ase_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.clean"><code class="docutils literal notranslate"><span class="pre">clean</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.clean.CustomMatrix"><code class="docutils literal notranslate"><span class="pre">clean.CustomMatrix()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.clean.all_clean"><code class="docutils literal notranslate"><span class="pre">clean.all_clean()</span></code></a></li>
@@ -83,6 +84,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.clean_pacman.run_pacman"><code class="docutils literal notranslate"><span class="pre">clean_pacman.run_pacman()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.ensure_data"><code class="docutils literal notranslate"><span class="pre">ensure_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.mof_check"><code class="docutils literal notranslate"><span class="pre">mof_check</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.mof_check.Chen_Manz"><code class="docutils literal notranslate"><span class="pre">mof_check.Chen_Manz()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.mof_check.check"><code class="docutils literal notranslate"><span class="pre">mof_check.check()</span></code></a></li>
@@ -369,6 +371,26 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.curate.ase_format">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">ase_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#ase_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.ase_format" title="Permalink to this definition"></a></dt>
+<dd><p>try to read CIF and convert to ASE format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>structure</strong> (<em>str</em>) – path to your CIF.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>ASE format CIF.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cif</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="CoREMOF.curate.clean">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_skin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'result_curation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'clean_result.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.clean" title="Permalink to this definition"></a></dt>
@@ -547,6 +569,26 @@
 <span class="sig-name descname"><span class="pre">run_pacman</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#clean_pacman.run_pacman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.clean_pacman.run_pacman" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.curate.ensure_data">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">ensure_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#ensure_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.ensure_data" title="Permalink to this definition"></a></dt>
+<dd><p>Precheck your CIF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>structure</strong> (<em>str</em>) – path to your CIF.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>added “data_struc” CIF</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cif</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
