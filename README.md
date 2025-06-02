@@ -11,7 +11,9 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15055758.svg)](https://doi.org/10.5281/zenodo.15055758)
 <!-- [![codecov](https://codecov.io/gh/sxm13/CoREMOF_tools/branch/main/graph/badge.svg)](https://codecov.io/gh/sxm13/CoREMOF_tools)
 [![Build Status](https://travis-ci.org/sxm13/CoREMOF_tools.svg?branch=master)](https://travis-ci.org/sxm13/CoREMOF_toolst) -->
-                         
+
+**Develop by [Guobin Zhao](https://github.com/sxm13)**
+
 #### Installation                                                                                    
 This API includes tools developed to collect, curate, and classify Computation-Ready, Experimental MOF database.    
 a. You need to install the [CSD software and python API](https://downloads.ccdc.cam.ac.uk/documentation/API/installation_notes.html) before downloading the full CoRE MOF database.                                                            
