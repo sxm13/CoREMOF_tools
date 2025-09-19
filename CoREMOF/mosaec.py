@@ -1,18 +1,9 @@
-"""Code for MOSAEC checker. Ref: White, A.; Gibaldi, M.; Burner, J.; Woo, T. K. Alarming Structural Error Rates in MOF Databases Used in Computational Screening Identified via a Novel Metal Oxidation State-Based Method. ChemRxiv 2024. https://doi.org/10.26434/chemrxiv-2024-ftsv3.
-"""
-
-from __future__ import annotations
-
-# handle differing python versions (< 3.8, & > 3.9) of CSD python API
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal
 
-import os
 import math
-
-import pandas as pd
 
 import mendeleev
 
@@ -25,13 +16,12 @@ from ccdc.molecule import Atom, Bond, Molecule
 
 from ccdc import descriptors
 
-
 def readentry(input_cif: str) -> Crystal:
     """
     Reads a CIF file containing structure data and converts it to a
     standard atom labeling convention using the ccdc.crystal module.
 
-    Args:
+    Parameters:
         input_cif (str): filename (.CIF) containing crystal structure data.
 
     Returns:
@@ -120,7 +110,7 @@ def readSBU(input_mol2: str) -> Crystal:
     and converts it to a standard atom labeling convention using
     the ccdc.crystal module.
 
-    Args:
+    Parameters:
         input_mol2 (str): filename (.mol2) containing SBU/metal complex
                           structural data.
 
@@ -157,7 +147,7 @@ def read_CSD_entry(input_refcode: str) -> Crystal:
     """
     Read entries directly from the CSD CrystalReader according to CSD refcode.
 
-    Args:
+    Parameters:
         input_refcode (str): string used to identify materials in the CSD.
 
     Returns:
@@ -176,7 +166,7 @@ def get_no_metal_molecule(inputmolecule: Molecule) -> Molecule:
     """
     Remove metal atoms from the input Molecule object.
 
-    Args:
+    Parameters:
         inputmolecule (ccdc.molecule.Molecule): original Molecule object.
 
     Returns:
@@ -195,7 +185,7 @@ def get_unique_sites(mole: Molecule, asymmole: Molecule) -> list[Atom]:
     """
     Get the unique atoms in a structure belonging to the asymmetric unit.
 
-    Args:
+    Parameters:
         mole (ccdc.molecule.Molecule): original structure Molecule object.
         asymmole (ccdc.molecule.Molecule): asymmetric unit of the structure.
 
@@ -245,7 +235,7 @@ def get_metal_sites(sites: list[Atom]) -> list[Atom]:
     """
     Get the metal sites in a structure belonging to the asymmetric unit.
 
-    Args:
+    Parameters:
         sites (list[ccdc.molecule.Atom]): list of unique atoms in the structure
                                           that belong to the asymmetric unit.
 
@@ -266,7 +256,7 @@ def get_ligand_sites(
     """
     Get the ligand sites binding each metal atom in a structure.
 
-    Args:
+    Parameters:
         metalsites (list[ccdc.molecule.Atom]): list of metal sites in the structure
                                                that belong to the asymmetric unit.
         sites (list[ccdc.molecule.Atom]):  list of unique atoms in the structure
@@ -294,7 +284,7 @@ def get_binding_sites(metalsites: list[Atom], uniquesites: list[Atom]) -> list[A
     Get the binding sites in a structure, given the list of unique metal atoms
     and all unique atoms.
 
-    Args:
+    Parameters:
         metalsites (list[ccdc.molecule.Atom]): list of unique metal atoms.
         uniquesites (list[ccdc.molecule.Atom]): list of unique atoms.
 
@@ -315,7 +305,7 @@ def ringVBOs(mole: Molecule) -> dict[int, int]:
     """
     Calculates the VBO (valence bond order) for each atom in the structure.
 
-    Args:
+    Parameters:
         mole (ccdc.molecule.Molecule): Molecule object representing the structure.
 
     Returns:
@@ -577,7 +567,7 @@ def assign_VBS(atom: Atom, rVBO: dict[int, int], dVBO: dict[int, float]) -> int:
     """
     Assigns a Valence-Bond-Sum (VBS) to an atom.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object.
         rVBO (dict[int, int]): dictionary with each atom's index in mole.atoms
                                as keys and VBO (valence bond order) as values.
@@ -620,7 +610,7 @@ def delocalisedLBO(molecule: Molecule) -> dict[int, float]:
     Writes a dictionary of all atoms in the molecule with delocalized bonds
     and their (delocalized-only) valence bond sum (VBS).
 
-    Args:
+    Parameters:
         molecule (ccdc.molecule.Molecule): Molecule object.
 
     Returns:
@@ -633,7 +623,7 @@ def delocalisedLBO(molecule: Molecule) -> dict[int, float]:
         """
         Counts the number of termini in the input delocalized bond system.
 
-        Args:
+        Parameters:
             atomlist (list[ccdc.molecule.Atom]): list of atoms in delocalised system.
 
         Returns:
@@ -654,7 +644,7 @@ def delocalisedLBO(molecule: Molecule) -> dict[int, float]:
         Recursively searches for atoms in delocalised bond systems starting from
         an input list containing at least one delocalised bonding atom.
 
-        Args:
+        Parameters:
             atomlist (list[ccdc.molecule.Atom)]: list of atoms in delocalised system.
 
         Returns:
@@ -702,7 +692,7 @@ def iVBS_FormalCharge(atom: Atom) -> int:
     Determines the formal charge of an atom NOT involved in any aromatic or
     delocalized bonding system.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object
 
     Returns:
@@ -755,7 +745,7 @@ def get_CN(atom: Atom) -> int:
     """
     Determines the coordination number of the input atom.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object.
 
     Returns:
@@ -772,7 +762,7 @@ def valence_e(elmnt: Atom) -> int:
     """
     Determines the number of valence electrons of an atom/element.
 
-    Args:
+    Parameters:
         elmnt (ccdc.molecule.Atom): Atom object.
 
     Returns:
@@ -801,7 +791,7 @@ def carbocation_check(atom: Atom) -> Literal["tetrahedral", "trigonal"]:
     """
     Check carbocation/carbanion geometry according to bond angles.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object.
 
     Returns:
@@ -832,7 +822,7 @@ def carbene_type(atom: Atom) -> Literal["singlet", "triplet"]:
     """
     Distinguishes between singlet and triplet carbenes.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object(s) suspected of belonging to a
                                    carbene (2-coordinate carbon II).
 
@@ -868,7 +858,7 @@ def hapticity(atom: Atom, metalsite: list[Atom]) -> bool:
     """
     Determines if a ligand binding site possesses hapticity (any n-hapto).
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): Atom object.
         metalsites (list[ccdc.molecule.Atom]): list of metal sites in the structure
                                                that belong to the asymmetric unit.
@@ -888,7 +878,7 @@ def bridging(atom: Atom) -> int:
     Determines how many metal atoms the input atom binds to search for
     bridging sites.
 
-    Args:
+    Parameters:
         atom (ccdc.molecule.Atom): binding site Atom object.
 
     Returns:
@@ -907,7 +897,7 @@ def iVBS_Oxidation_Contrib(
     """
     Determines the oxidation state contribution of all unique atoms.
 
-    Args:
+    Parameters:
         unique_atoms (list[ccdc.molecule.Atom]): unique atoms belonging to the
                                                  asymmetric unit.
         rVBO (dict[int, int]): dictionary with each atom's index in mole.atoms
@@ -1012,7 +1002,7 @@ def redundantAON(AON: dict[Atom, float], molecule: Molecule) -> dict[Atom, float
     Maps the oxidation contributions of unique atom sites to the redundant atom
     sites according to their shared atom labels.
 
-    Args:
+    Parameters:
         AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys
                         and their oxidation state contribution as values for unique
                         Atom objects.
@@ -1045,7 +1035,7 @@ def binding_domain(
     delocalized bonds, by using the bonding domains (see methodology section
     for details on the implementation and validation).
 
-    Args:
+    Parameters:
         binding_sites (list[ccdc.molecule.Atom]): list of binding sites connecting
                                                   metal atoms and ligands.
         AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys
@@ -1220,7 +1210,7 @@ def binding_contrib(
     Redistributes oxidation state contributions within a binding domain.
     Equal distribution is assumed across connected binding sites in each domain.
 
-    Args:
+    Parameters:
         binding_sphere (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):
                         dictionary with Atom object as keys and a list of Atoms
                         connected through bonding that form a binding domain as values.
@@ -1253,7 +1243,7 @@ def outer_sphere_domain(
     Identifies sites outside of the binding domains which must be checked for
     outer sphere charge contributions.
 
-    Args:
+    Parameters:
         uniquesites (list[ccdc.molecule.Atom]): list of unique atoms in the structure
                                                 belonging to the asymmetric unit.
         binding_domains (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):
@@ -1285,7 +1275,7 @@ def outer_sphere_contrib(outer_sphere: list[Atom], AON: dict[Atom, float]) -> in
     Calculates the total oxidation state contribution of the outer sphere atoms as
     the sum of their formal charge/contributions.
 
-    Args:
+    Parameters:
         outer_sphere (list[ccdc.molecule.Atom]): list of unique, non-metal atoms
                                                  outside of binding domains.
         AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys
@@ -1310,7 +1300,7 @@ def get_metal_networks(
     charged ligands. Any connections through neutral ligands are ignored as they
     do not contribute to the charge accounting.
 
-    Args:
+    Parameters:
         ligand_sites (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):
                             dictionary with metal Atom object as key and the
                             list of ligand atoms which bind them as values.
@@ -1447,7 +1437,7 @@ def distribute_ONEC(
     & calculates their associated electron counts. Features utilizing electron
     counts are minimally implemented at this time.
 
-    Args:
+    Parameters:
         sONEC (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with
                         metal Atom object as keys and lists containing the initial
                         oxidation state and electron count implied by only the
@@ -1796,7 +1786,7 @@ def distribute_OuterSphere(
     local distribution) & calculates their associated electron counts.
     Features utilizing electron counts are minimally implemented at this time.
 
-    Args:
+    Parameters:
         sONEC (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with
                         metal Atom object as keys and lists containing the initial
                         oxidation state and electron count implied by only the equal
@@ -2069,7 +2059,7 @@ def global_charge_distribution(
     & calculates their associated electron counts. Features utilizing electron
     counts are minimally implemented at this time.
 
-    Args:
+    Parameters:
         metalONdict (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with
                         metal Atom object as keys and lists containing the initial
                         oxidation state and electron count implied by only the
@@ -3878,7 +3868,7 @@ def ONmostprob(iONP: dict[str, list[float]]) -> dict[str, int]:
     Determines the highest probability oxidation state for each metal element.
     These values are utilized during charge distribution routines.
 
-    Args:
+    Parameters:
         iONP (dict[str, list[float]]): dictionary with metal element symbols as
                         keys and a list of the probability at the relevant oxidation
                         states as values.
@@ -3902,7 +3892,7 @@ def getCN(lsites: dict[Atom, list[Atom]]) -> dict[Molecule, int]:
     Determines the highest probability oxidation state for each metal element.
     These values are utilized during charge distribution routines.
 
-    Args:
+    Parameters:
         lsites (dict[Atom, list[Atom]]): dictionary with metal Atom object as keys
                         and the list of ligand atoms which bind them as values.
 
@@ -4027,3 +4017,86 @@ def check(file_path: str) -> dict[str, list[str]]:
                 flags["low_prob_3"][lbl] = "BAD"
         
     return flags
+
+import glob
+import os
+import json
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from tqdm import tqdm
+import  pandas as pd
+
+
+def worker(cif_path):
+    name = os.path.basename(cif_path).replace(".cif", "")
+    try:
+        result = check(cif_path)
+        return {
+            "name": name,
+            "impossible":   result.get("impossible",   "unknown"),
+            "unknown":      result.get("unknown",      "unknown"),
+            "zero_valence": result.get("zero_valence", "unknown"),
+            "noint_flag":   result.get("noint_flag",   "unknown"),
+            "low_prob_1":   result.get("low_prob_1",   "unknown"),
+            "low_prob_2":   result.get("low_prob_2",   "unknown"),
+            "low_prob_3":   result.get("low_prob_3",   "unknown"),
+            "low_prob_multi": result.get("low_prob_multi", "unknown"),
+        }
+    except Exception:
+        return {
+            "name": name,
+            "impossible":   "error",
+            "unknown":      "error",
+            "zero_valence": "error",
+            "noint_flag":   "error",
+            "low_prob_1":   "error",
+            "low_prob_2":   "error",
+            "low_prob_3":   "error",
+            "low_prob_multi": "error",
+        }
+
+def run(cif_folder, save_path="./", max_workers=64):
+    os.makedirs(save_path, exist_ok=True)
+
+    all_cifs = glob.glob(cif_folder+"/*.cif")
+
+    with ProcessPoolExecutor(max_workers=max_workers) as exe:
+        futures = {exe.submit(worker, cif): cif for cif in all_cifs}
+
+        for fut in tqdm(as_completed(futures), total=len(futures), desc="Checking CIFs"):
+            result_dict = fut.result()
+            name = result_dict["name"]
+            out_path = os.path.join(save_path, f"{name}.json")
+    
+            with open(out_path, "w", encoding="utf-8") as jf:
+                json.dump(result_dict, jf, ensure_ascii=False, indent=2)
+
+    all_data = []
+    columns = ["impossible", "unknown", "zero_valence", "noint_flag",
+                "low_prob_1", "low_prob_2", "low_prob_3", "low_prob_multi"]
+
+    for file in tqdm(glob.glob(save_path+"/*json")):
+        
+        name = file.split("/")[-1].replace(".json", "")
+        data_each = [name, False, False,
+                        False, False, False,
+                        False, False, False]
+
+        with open(file, "r") as f:
+            data = json.load(f)
+        
+        i=0
+        for col in columns:
+            for metal in data[col]:
+                if data[col][metal] != "GOOD":
+                    data_each[i+1] = True
+            i+=1
+
+        all_data.append(data_each)
+            
+    data = pd.DataFrame(all_data, columns=["id", "impossible", "unknown",
+                                        "zero_valence", "noint_flag",
+                                        "low_prob_1", "low_prob_2",
+                                        "low_prob_3",
+                                        "low_prob_multi"
+                                        ]
+                                        ).to_csv(save_path+"/mosaec_results.csv", index=False)

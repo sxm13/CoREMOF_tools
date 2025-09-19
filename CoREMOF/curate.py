@@ -1,7 +1,7 @@
 """Process your CIF to "CoRE MOF" CIF.
 """
 
-import os, re, csv, json, requests, functools, warnings, itertools, collections, subprocess
+import os, re, csv, json, glob, requests, functools, warnings, itertools, collections
 from ase.io import read, write
 
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -25,6 +25,7 @@ from CoREMOF.utils.atoms_definitions import ATR, Coef_A, Coef_C #, BO_list, meta
 
 from gemmi import cif as CIF
 from PACMANCharge import pmcharge
+from MOFClassifier import CLscore
 
 
 def ensure_data(structure):
@@ -833,22 +834,47 @@ class clean_pacman():
 
 try:
     from ccdc import io
-    from CoREMOF.mosaec import check
+    from CoREMOF.mosaec import run
 except:
     print("Before using MOSAEC to check your structure, please install CSD Python API with license")
 
 
-def MOSAEC(structure):
-    """Check MOF by Metal Oxidation State Automated Error Checker [MOSAEC](https://github.com/uowoolab/MOSAEC).         
+def run_MOSAEC(cif_folder, save_path="./", max_workers=64):
+    """Check MOF by Metal Oxidation State Automated Error Checker: https://github.com/uowoolab/MOSAEC. Ref: https://doi.org/10.1021/jacs.5c04914        
     
     Args:
-        structure (str): path to your CIF.
+        cif_folder (str): path to the folder including all CIFs.
+        save_path (str): path to save the results.
+        max_workers (int): number of parallel processes.
 
     Returns:
         dict:
-            -   result of MOSAEC.
+            -   results of MOSAEC.
     """
 
-    result = check(structure)
+    results = run(cif_folder, max_workers=max_workers, save_path=save_path)
 
-    return result
+    return results
+
+
+def run_mofclassifier(cif_folder, save_path="./mofclassifier_results.json", model="core", batch_size=64):
+    """Check MOF by MOFClassifier: https://github.com/Chung-Research-Group/MOFClassifier. Ref: https://doi.org/10.1021/jacs.5c10126        
+    
+    Args:
+        cif_folder (str): path to the folder including all CIFs.
+        save_path (str): path to save the predictions.
+        model (str): the name of model used for predictions.
+        batch_size (int): batch size for predicting.
+
+    Returns:
+        dict:
+            -   results of MOFClassifier.
+    """
+    all_structures = [stuc for stuc in glob.glob(cif_folder+"/*cif")[:]]
+    results = CLscore.predict_batch(root_cifs=all_structures, model=model, batch_size=batch_size)
+    out = {}
+    for rid, s1, s2 in results:
+        out[rid] = [s1, s2]
+    with open(save_path, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=2, ensure_ascii=False)
+    return out

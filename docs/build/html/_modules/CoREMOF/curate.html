@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoREMOF.curate &mdash; CoREMOF 0.2.0 documentation</title>
+  <title>CoREMOF.curate &mdash; CoREMOF 0.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
 
@@ -74,7 +74,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Process your CIF to &quot;CoRE MOF&quot; CIF.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">csv</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">requests</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span><span class="o">,</span><span class="w"> </span><span class="nn">warnings</span><span class="o">,</span><span class="w"> </span><span class="nn">itertools</span><span class="o">,</span><span class="w"> </span><span class="nn">collections</span><span class="o">,</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">csv</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">glob</span><span class="o">,</span><span class="w"> </span><span class="nn">requests</span><span class="o">,</span><span class="w"> </span><span class="nn">functools</span><span class="o">,</span><span class="w"> </span><span class="nn">warnings</span><span class="o">,</span><span class="w"> </span><span class="nn">itertools</span><span class="o">,</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
@@ -98,6 +98,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">gemmi</span><span class="w"> </span><span class="kn">import</span> <span class="n">cif</span> <span class="k">as</span> <span class="n">CIF</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PACMANCharge</span><span class="w"> </span><span class="kn">import</span> <span class="n">pmcharge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MOFClassifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLscore</span>
 
 
 <div class="viewcode-block" id="ensure_data"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.curate.ensure_data">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ensure_data</span><span class="p">(</span><span class="n">structure</span><span class="p">):</span>
@@ -906,25 +907,50 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">ccdc</span><span class="w"> </span><span class="kn">import</span> <span class="n">io</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">CoREMOF.mosaec</span><span class="w"> </span><span class="kn">import</span> <span class="n">check</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">CoREMOF.mosaec</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Before using MOSAEC to check your structure, please install CSD Python API with license&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MOSAEC"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.curate.MOSAEC">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">MOSAEC</span><span class="p">(</span><span class="n">structure</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check MOF by Metal Oxidation State Automated Error Checker [MOSAEC](https://github.com/uowoolab/MOSAEC).         </span>
+<div class="viewcode-block" id="run_MOSAEC"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.curate.run_MOSAEC">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">run_MOSAEC</span><span class="p">(</span><span class="n">cif_folder</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check MOF by Metal Oxidation State Automated Error Checker: https://github.com/uowoolab/MOSAEC. Ref: https://doi.org/10.1021/jacs.5c04914        </span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
-<span class="sd">        structure (str): path to your CIF.</span>
+<span class="sd">        cif_folder (str): path to the folder including all CIFs.</span>
+<span class="sd">        save_path (str): path to save the results.</span>
+<span class="sd">        max_workers (int): number of parallel processes.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict:</span>
-<span class="sd">            -   result of MOSAEC.</span>
+<span class="sd">            -   results of MOSAEC.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">cif_folder</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="run_mofclassifier"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.curate.run_mofclassifier">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">run_mofclassifier</span><span class="p">(</span><span class="n">cif_folder</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;./mofclassifier_results.json&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check MOF by MOFClassifier: https://github.com/Chung-Research-Group/MOFClassifier. Ref: https://doi.org/10.1021/jacs.5c10126        </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        cif_folder (str): path to the folder including all CIFs.</span>
+<span class="sd">        save_path (str): path to save the predictions.</span>
+<span class="sd">        model (str): the name of model used for predictions.</span>
+<span class="sd">        batch_size (int): batch size for predicting.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict:</span>
+<span class="sd">            -   results of MOFClassifier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_structures</span> <span class="o">=</span> <span class="p">[</span><span class="n">stuc</span> <span class="k">for</span> <span class="n">stuc</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">cif_folder</span><span class="o">+</span><span class="s2">&quot;/*cif&quot;</span><span class="p">)[:]]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">CLscore</span><span class="o">.</span><span class="n">predict_batch</span><span class="p">(</span><span class="n">root_cifs</span><span class="o">=</span><span class="n">all_structures</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
 </pre></div>
 
            </div>

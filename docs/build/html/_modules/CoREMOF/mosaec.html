@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoREMOF.mosaec &mdash; CoREMOF 0.1.9 documentation</title>
+  <title>CoREMOF.mosaec &mdash; CoREMOF 0.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
 
@@ -71,21 +71,12 @@
            <div itemprop="articleBody">
              
   <h1>Source code for CoREMOF.mosaec</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Code for MOSAEC checker. Ref: White, A.; Gibaldi, M.; Burner, J.; Woo, T. K. Alarming Structural Error Rates in MOF Databases Used in Computational Screening Identified via a Novel Metal Oxidation State-Based Method. ChemRxiv 2024. https://doi.org/10.26434/chemrxiv-2024-ftsv3.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
-<span class="c1"># handle differing python versions (&lt; 3.8, &amp; &gt; 3.9) of CSD python API</span>
-<span class="k">try</span><span class="p">:</span>
+<span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">mendeleev</span>
 
@@ -98,13 +89,12 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">ccdc</span><span class="w"> </span><span class="kn">import</span> <span class="n">descriptors</span>
 
-
 <div class="viewcode-block" id="readentry"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.mosaec.readentry">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">readentry</span><span class="p">(</span><span class="n">input_cif</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Crystal</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a CIF file containing structure data and converts it to a</span>
 <span class="sd">    standard atom labeling convention using the ccdc.crystal module.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        input_cif (str): filename (.CIF) containing crystal structure data.</span>
 
 <span class="sd">    Returns:</span>
@@ -193,7 +183,7 @@
 <span class="sd">    and converts it to a standard atom labeling convention using</span>
 <span class="sd">    the ccdc.crystal module.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        input_mol2 (str): filename (.mol2) containing SBU/metal complex</span>
 <span class="sd">                          structural data.</span>
 
@@ -230,7 +220,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read entries directly from the CSD CrystalReader according to CSD refcode.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        input_refcode (str): string used to identify materials in the CSD.</span>
 
 <span class="sd">    Returns:</span>
@@ -249,7 +239,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove metal atoms from the input Molecule object.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        inputmolecule (ccdc.molecule.Molecule): original Molecule object.</span>
 
 <span class="sd">    Returns:</span>
@@ -268,7 +258,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the unique atoms in a structure belonging to the asymmetric unit.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        mole (ccdc.molecule.Molecule): original structure Molecule object.</span>
 <span class="sd">        asymmole (ccdc.molecule.Molecule): asymmetric unit of the structure.</span>
 
@@ -318,7 +308,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the metal sites in a structure belonging to the asymmetric unit.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        sites (list[ccdc.molecule.Atom]): list of unique atoms in the structure</span>
 <span class="sd">                                          that belong to the asymmetric unit.</span>
 
@@ -339,7 +329,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the ligand sites binding each metal atom in a structure.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        metalsites (list[ccdc.molecule.Atom]): list of metal sites in the structure</span>
 <span class="sd">                                               that belong to the asymmetric unit.</span>
 <span class="sd">        sites (list[ccdc.molecule.Atom]):  list of unique atoms in the structure</span>
@@ -367,7 +357,7 @@
 <span class="sd">    Get the binding sites in a structure, given the list of unique metal atoms</span>
 <span class="sd">    and all unique atoms.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        metalsites (list[ccdc.molecule.Atom]): list of unique metal atoms.</span>
 <span class="sd">        uniquesites (list[ccdc.molecule.Atom]): list of unique atoms.</span>
 
@@ -388,7 +378,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the VBO (valence bond order) for each atom in the structure.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        mole (ccdc.molecule.Molecule): Molecule object representing the structure.</span>
 
 <span class="sd">    Returns:</span>
@@ -650,7 +640,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assigns a Valence-Bond-Sum (VBS) to an atom.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object.</span>
 <span class="sd">        rVBO (dict[int, int]): dictionary with each atom&#39;s index in mole.atoms</span>
 <span class="sd">                               as keys and VBO (valence bond order) as values.</span>
@@ -693,7 +683,7 @@
 <span class="sd">    Writes a dictionary of all atoms in the molecule with delocalized bonds</span>
 <span class="sd">    and their (delocalized-only) valence bond sum (VBS).</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        molecule (ccdc.molecule.Molecule): Molecule object.</span>
 
 <span class="sd">    Returns:</span>
@@ -706,7 +696,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Counts the number of termini in the input delocalized bond system.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters:</span>
 <span class="sd">            atomlist (list[ccdc.molecule.Atom]): list of atoms in delocalised system.</span>
 
 <span class="sd">        Returns:</span>
@@ -727,7 +717,7 @@
 <span class="sd">        Recursively searches for atoms in delocalised bond systems starting from</span>
 <span class="sd">        an input list containing at least one delocalised bonding atom.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Parameters:</span>
 <span class="sd">            atomlist (list[ccdc.molecule.Atom)]: list of atoms in delocalised system.</span>
 
 <span class="sd">        Returns:</span>
@@ -775,7 +765,7 @@
 <span class="sd">    Determines the formal charge of an atom NOT involved in any aromatic or</span>
 <span class="sd">    delocalized bonding system.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object</span>
 
 <span class="sd">    Returns:</span>
@@ -828,7 +818,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines the coordination number of the input atom.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object.</span>
 
 <span class="sd">    Returns:</span>
@@ -845,7 +835,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines the number of valence electrons of an atom/element.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        elmnt (ccdc.molecule.Atom): Atom object.</span>
 
 <span class="sd">    Returns:</span>
@@ -874,7 +864,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check carbocation/carbanion geometry according to bond angles.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object.</span>
 
 <span class="sd">    Returns:</span>
@@ -905,7 +895,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distinguishes between singlet and triplet carbenes.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object(s) suspected of belonging to a</span>
 <span class="sd">                                   carbene (2-coordinate carbon II).</span>
 
@@ -941,7 +931,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines if a ligand binding site possesses hapticity (any n-hapto).</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): Atom object.</span>
 <span class="sd">        metalsites (list[ccdc.molecule.Atom]): list of metal sites in the structure</span>
 <span class="sd">                                               that belong to the asymmetric unit.</span>
@@ -961,7 +951,7 @@
 <span class="sd">    Determines how many metal atoms the input atom binds to search for</span>
 <span class="sd">    bridging sites.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        atom (ccdc.molecule.Atom): binding site Atom object.</span>
 
 <span class="sd">    Returns:</span>
@@ -980,7 +970,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines the oxidation state contribution of all unique atoms.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        unique_atoms (list[ccdc.molecule.Atom]): unique atoms belonging to the</span>
 <span class="sd">                                                 asymmetric unit.</span>
 <span class="sd">        rVBO (dict[int, int]): dictionary with each atom&#39;s index in mole.atoms</span>
@@ -1085,7 +1075,7 @@
 <span class="sd">    Maps the oxidation contributions of unique atom sites to the redundant atom</span>
 <span class="sd">    sites according to their shared atom labels.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys</span>
 <span class="sd">                        and their oxidation state contribution as values for unique</span>
 <span class="sd">                        Atom objects.</span>
@@ -1118,7 +1108,7 @@
 <span class="sd">    delocalized bonds, by using the bonding domains (see methodology section</span>
 <span class="sd">    for details on the implementation and validation).</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        binding_sites (list[ccdc.molecule.Atom]): list of binding sites connecting</span>
 <span class="sd">                                                  metal atoms and ligands.</span>
 <span class="sd">        AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys</span>
@@ -1293,7 +1283,7 @@
 <span class="sd">    Redistributes oxidation state contributions within a binding domain.</span>
 <span class="sd">    Equal distribution is assumed across connected binding sites in each domain.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        binding_sphere (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):</span>
 <span class="sd">                        dictionary with Atom object as keys and a list of Atoms</span>
 <span class="sd">                        connected through bonding that form a binding domain as values.</span>
@@ -1326,7 +1316,7 @@
 <span class="sd">    Identifies sites outside of the binding domains which must be checked for</span>
 <span class="sd">    outer sphere charge contributions.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        uniquesites (list[ccdc.molecule.Atom]): list of unique atoms in the structure</span>
 <span class="sd">                                                belonging to the asymmetric unit.</span>
 <span class="sd">        binding_domains (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):</span>
@@ -1358,7 +1348,7 @@
 <span class="sd">    Calculates the total oxidation state contribution of the outer sphere atoms as</span>
 <span class="sd">    the sum of their formal charge/contributions.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        outer_sphere (list[ccdc.molecule.Atom]): list of unique, non-metal atoms</span>
 <span class="sd">                                                 outside of binding domains.</span>
 <span class="sd">        AON (dict[ccdc.molecule.Atom, float]): dictionary with Atom object as keys</span>
@@ -1383,7 +1373,7 @@
 <span class="sd">    charged ligands. Any connections through neutral ligands are ignored as they</span>
 <span class="sd">    do not contribute to the charge accounting.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        ligand_sites (dict[ccdc.molecule.Atom, list[ccdc.molecule.Atom]]):</span>
 <span class="sd">                            dictionary with metal Atom object as key and the</span>
 <span class="sd">                            list of ligand atoms which bind them as values.</span>
@@ -1520,7 +1510,7 @@
 <span class="sd">    &amp; calculates their associated electron counts. Features utilizing electron</span>
 <span class="sd">    counts are minimally implemented at this time.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        sONEC (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with</span>
 <span class="sd">                        metal Atom object as keys and lists containing the initial</span>
 <span class="sd">                        oxidation state and electron count implied by only the</span>
@@ -1869,7 +1859,7 @@
 <span class="sd">    local distribution) &amp; calculates their associated electron counts.</span>
 <span class="sd">    Features utilizing electron counts are minimally implemented at this time.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        sONEC (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with</span>
 <span class="sd">                        metal Atom object as keys and lists containing the initial</span>
 <span class="sd">                        oxidation state and electron count implied by only the equal</span>
@@ -2142,7 +2132,7 @@
 <span class="sd">    &amp; calculates their associated electron counts. Features utilizing electron</span>
 <span class="sd">    counts are minimally implemented at this time.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        metalONdict (dict[ccdc.molecule.Atom, list[float, float]]): dictionary with</span>
 <span class="sd">                        metal Atom object as keys and lists containing the initial</span>
 <span class="sd">                        oxidation state and electron count implied by only the</span>
@@ -3951,7 +3941,7 @@
 <span class="sd">    Determines the highest probability oxidation state for each metal element.</span>
 <span class="sd">    These values are utilized during charge distribution routines.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        iONP (dict[str, list[float]]): dictionary with metal element symbols as</span>
 <span class="sd">                        keys and a list of the probability at the relevant oxidation</span>
 <span class="sd">                        states as values.</span>
@@ -3975,7 +3965,7 @@
 <span class="sd">    Determines the highest probability oxidation state for each metal element.</span>
 <span class="sd">    These values are utilized during charge distribution routines.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        lsites (dict[Atom, list[Atom]]): dictionary with metal Atom object as keys</span>
 <span class="sd">                        and the list of ligand atoms which bind them as values.</span>
 
@@ -4100,6 +4090,89 @@
                 <span class="n">flags</span><span class="p">[</span><span class="s2">&quot;low_prob_3&quot;</span><span class="p">][</span><span class="n">lbl</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;BAD&quot;</span>
         
     <span class="k">return</span> <span class="n">flags</span></div>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w">  </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+<div class="viewcode-block" id="worker"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.mosaec.worker">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">worker</span><span class="p">(</span><span class="n">cif_path</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cif_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.cif&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">cif_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;impossible&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;impossible&quot;</span><span class="p">,</span>   <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;unknown&quot;</span><span class="p">:</span>      <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unknown&quot;</span><span class="p">,</span>      <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;zero_valence&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;zero_valence&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;noint_flag&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;noint_flag&quot;</span><span class="p">,</span>   <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;low_prob_1&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;low_prob_1&quot;</span><span class="p">,</span>   <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;low_prob_2&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;low_prob_2&quot;</span><span class="p">,</span>   <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;low_prob_3&quot;</span><span class="p">:</span>   <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;low_prob_3&quot;</span><span class="p">,</span>   <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;low_prob_multi&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;low_prob_multi&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;impossible&quot;</span><span class="p">:</span>   <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;unknown&quot;</span><span class="p">:</span>      <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;zero_valence&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;noint_flag&quot;</span><span class="p">:</span>   <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;low_prob_1&quot;</span><span class="p">:</span>   <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;low_prob_2&quot;</span><span class="p">:</span>   <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;low_prob_3&quot;</span><span class="p">:</span>   <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;low_prob_multi&quot;</span><span class="p">:</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../CoREMOF.html#CoREMOF.mosaec.run">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">cif_folder</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">all_cifs</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">cif_folder</span><span class="o">+</span><span class="s2">&quot;/*.cif&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">exe</span><span class="p">:</span>
+        <span class="n">futures</span> <span class="o">=</span> <span class="p">{</span><span class="n">exe</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">cif</span><span class="p">):</span> <span class="n">cif</span> <span class="k">for</span> <span class="n">cif</span> <span class="ow">in</span> <span class="n">all_cifs</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">futures</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Checking CIFs&quot;</span><span class="p">):</span>
+            <span class="n">result_dict</span> <span class="o">=</span> <span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">result_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">out_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+    
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jf</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result_dict</span><span class="p">,</span> <span class="n">jf</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;impossible&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span> <span class="s2">&quot;zero_valence&quot;</span><span class="p">,</span> <span class="s2">&quot;noint_flag&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;low_prob_1&quot;</span><span class="p">,</span> <span class="s2">&quot;low_prob_2&quot;</span><span class="p">,</span> <span class="s2">&quot;low_prob_3&quot;</span><span class="p">,</span> <span class="s2">&quot;low_prob_multi&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">save_path</span><span class="o">+</span><span class="s2">&quot;/*json&quot;</span><span class="p">)):</span>
+        
+        <span class="n">name</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">data_each</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        
+        <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">metal</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">metal</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;GOOD&quot;</span><span class="p">:</span>
+                    <span class="n">data_each</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+
+        <span class="n">all_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_each</span><span class="p">)</span>
+            
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;impossible&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;zero_valence&quot;</span><span class="p">,</span> <span class="s2">&quot;noint_flag&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;low_prob_1&quot;</span><span class="p">,</span> <span class="s2">&quot;low_prob_2&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;low_prob_3&quot;</span><span class="p">,</span>
+                                        <span class="s2">&quot;low_prob_multi&quot;</span>
+                                        <span class="p">]</span>
+                                        <span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="o">+</span><span class="s2">&quot;/mosaec_results.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

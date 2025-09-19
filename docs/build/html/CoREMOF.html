@@ -53,7 +53,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoREMOF.curate">CoREMOF.curate module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.MOSAEC"><code class="docutils literal notranslate"><span class="pre">MOSAEC()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.ase_format"><code class="docutils literal notranslate"><span class="pre">ase_format()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.clean"><code class="docutils literal notranslate"><span class="pre">clean</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.clean.CustomMatrix"><code class="docutils literal notranslate"><span class="pre">clean.CustomMatrix()</span></code></a></li>
@@ -96,6 +95,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#CoREMOF.curate.preprocess.split_pri_p1"><code class="docutils literal notranslate"><span class="pre">preprocess.split_pri_p1()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.run_MOSAEC"><code class="docutils literal notranslate"><span class="pre">run_MOSAEC()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.curate.run_mofclassifier"><code class="docutils literal notranslate"><span class="pre">run_mofclassifier()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoREMOF.get_mofid">CoREMOF.get_mofid module</a><ul>
@@ -146,7 +147,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.readentry"><code class="docutils literal notranslate"><span class="pre">readentry()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.redundantAON"><code class="docutils literal notranslate"><span class="pre">redundantAON()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.ringVBOs"><code class="docutils literal notranslate"><span class="pre">ringVBOs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.valence_e"><code class="docutils literal notranslate"><span class="pre">valence_e()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#CoREMOF.mosaec.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoREMOF.prediction">CoREMOF.prediction module</a><ul>
@@ -351,26 +354,6 @@
 <section id="module-CoREMOF.curate">
 <span id="coremof-curate-module"></span><h2>CoREMOF.curate module<a class="headerlink" href="#module-CoREMOF.curate" title="Permalink to this heading"></a></h2>
 <p>Process your CIF to “CoRE MOF” CIF.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="CoREMOF.curate.MOSAEC">
-<span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">MOSAEC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#MOSAEC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.MOSAEC" title="Permalink to this definition"></a></dt>
-<dd><p>Check MOF by Metal Oxidation State Automated Error Checker [MOSAEC](<a class="reference external" href="https://github.com/uowoolab/MOSAEC">https://github.com/uowoolab/MOSAEC</a>).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>structure</strong> (<em>str</em>) – path to your CIF.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>result of MOSAEC.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="CoREMOF.curate.ase_format">
 <span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">ase_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#ase_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.ase_format" title="Permalink to this definition"></a></dt>
@@ -668,6 +651,55 @@
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.curate.run_MOSAEC">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">run_MOSAEC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#run_MOSAEC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.run_MOSAEC" title="Permalink to this definition"></a></dt>
+<dd><p>Check MOF by Metal Oxidation State Automated Error Checker: <a class="reference external" href="https://github.com/uowoolab/MOSAEC">https://github.com/uowoolab/MOSAEC</a>. Ref: <a class="reference external" href="https://doi.org/10.1021/jacs.5c04914">https://doi.org/10.1021/jacs.5c04914</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cif_folder</strong> (<em>str</em>) – path to the folder including all CIFs.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – path to save the results.</p></li>
+<li><p><strong>max_workers</strong> (<em>int</em>) – number of parallel processes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>results of MOSAEC.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.curate.run_mofclassifier">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.curate.</span></span><span class="sig-name descname"><span class="pre">run_mofclassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./mofclassifier_results.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'core'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/curate.html#run_mofclassifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.curate.run_mofclassifier" title="Permalink to this definition"></a></dt>
+<dd><p>Check MOF by MOFClassifier: <a class="reference external" href="https://github.com/Chung-Research-Group/MOFClassifier">https://github.com/Chung-Research-Group/MOFClassifier</a>. Ref: <a class="reference external" href="https://doi.org/10.1021/jacs.5c10126">https://doi.org/10.1021/jacs.5c10126</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cif_folder</strong> (<em>str</em>) – path to the folder including all CIFs.</p></li>
+<li><p><strong>save_path</strong> (<em>str</em>) – path to save the predictions.</p></li>
+<li><p><strong>model</strong> (<em>str</em>) – the name of model used for predictions.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – batch size for predicting.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>results of MOFClassifier.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-CoREMOF.get_mofid">
 <span id="coremof-get-mofid-module"></span><h2>CoREMOF.get_mofid module<a class="headerlink" href="#module-CoREMOF.get_mofid" title="Permalink to this heading"></a></h2>
@@ -860,7 +892,6 @@ removal, the atoms object is centered at the center of the unit cell.</p>
 </section>
 <section id="module-CoREMOF.mosaec">
 <span id="coremof-mosaec-module"></span><h2>CoREMOF.mosaec module<a class="headerlink" href="#module-CoREMOF.mosaec" title="Permalink to this heading"></a></h2>
-<p>Code for MOSAEC checker. Ref: White, A.; Gibaldi, M.; Burner, J.; Woo, T. K. Alarming Structural Error Rates in MOF Databases Used in Computational Screening Identified via a Novel Metal Oxidation State-Based Method. ChemRxiv 2024. <a class="reference external" href="https://doi.org/10.26434/chemrxiv-2024-ftsv3">https://doi.org/10.26434/chemrxiv-2024-ftsv3</a>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="CoREMOF.mosaec.HighestKnownONs">
 <span class="sig-prename descclassname"><span class="pre">CoREMOF.mosaec.</span></span><span class="sig-name descname"><span class="pre">HighestKnownONs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/mosaec.html#HighestKnownONs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.mosaec.HighestKnownONs" title="Permalink to this definition"></a></dt>
@@ -1683,6 +1714,11 @@ Atom objects.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.mosaec.run">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.mosaec.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/mosaec.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.mosaec.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="CoREMOF.mosaec.valence_e">
 <span class="sig-prename descclassname"><span class="pre">CoREMOF.mosaec.</span></span><span class="sig-name descname"><span class="pre">valence_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elmnt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/mosaec.html#valence_e"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.mosaec.valence_e" title="Permalink to this definition"></a></dt>
 <dd><p>Determines the number of valence electrons of an atom/element.</p>
@@ -1698,6 +1734,11 @@ Atom objects.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoREMOF.mosaec.worker">
+<span class="sig-prename descclassname"><span class="pre">CoREMOF.mosaec.</span></span><span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cif_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CoREMOF/mosaec.html#worker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CoREMOF.mosaec.worker" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-CoREMOF.prediction">
