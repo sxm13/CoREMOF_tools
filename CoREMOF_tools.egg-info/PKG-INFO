@@ -1,6 +1,6 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: CoREMOF_tools
-Version: 0.3.2
+Version: 0.3.3
 Summary: Python API for CoRE MOF DB
 Author: Guobin Zhao
 Author-email: sxmzhaogb@gmail.com
@@ -42,6 +42,7 @@ Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
 Dynamic: license
+Dynamic: license-file
 Dynamic: project-url
 Dynamic: provides-extra
 Dynamic: requires-dist

@@ -1,7 +1,7 @@
 """Process your CIF to "CoRE MOF" CIF.
 """
 
-import os, re, csv, json, glob, requests, functools, warnings, itertools, collections
+import os, re, csv, json, glob, shutil, functools, warnings, itertools, collections
 from ase.io import read, write
 
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -651,7 +651,6 @@ class mof_check():
             return ["unknown"]
 
 
-
 class clean_pacman():
 
     """Removing free solvent and coordinated solvent but keep ions based on PACMAN-charge.         
@@ -667,79 +666,177 @@ class clean_pacman():
             -   result of curating (name, skin, removed solvent, charge of solvent).
             -   CIF by curating.
     """
-    def __init__(self, structure, initial_skin=0.25, output_folder="result_curation", saveto: str="clean_result.csv") -> pd.DataFrame:
-        self.structure = structure
+    def __init__(self,
+                 cif_path,
+                 initial_skin=0.25,
+                 output_folder="test"):
+        
+        self.cif_path = cif_path
+        self.prefix = Path(self.cif_path).stem
         self.initial_skin = initial_skin
         self.output = output_folder
-        self.saveto = saveto
         self.cambridge_radii = COVALENTRADII
         self.metal_list = [element for element, is_metal in METAL.items() if is_metal]
 
         os.makedirs(self.output, exist_ok=True)
-        if self.saveto:
-            self.csv_path = os.path.join(self.output, self.saveto)
-
         self.run_pacman()
         self.process()
         
+
     def run_pacman(self):
         pmcharge.predict(
-            cif_file=self.structure,
+            cif_file=self.cif_path,
             charge_type="DDEC6",
             digits=10,
             atom_type=True,
             neutral=False,
             keep_connect=False
         )
-        src = self.structure.replace(".cif", "_pacman.cif")
+        src = self.cif_path.replace(".cif", "_pacman.cif")
         dst = os.path.join(self.output, os.path.basename(src))
-        if os.path.exists(src):
-            os.rename(src, dst)
+
+        shutil.move(src, dst)
+
 
     def process(self):
-        try:
-            fsr_skin, fsr_solvent, fsr_ion, fsr_ion_charge = self.run_fsr()
-            asr_skin, asr_solvent, asr_ion, asr_ion_charge = self.run_asr()
+        f_d, c_d, f_s, f_i, f_i_e, c_s, c_i, c_i_e = self.run()
+        info_ = {}
+        info_["cif_id"] = self.prefix
+        info_["skin_free"] = float(f_d)
+        info_["skin_coord"] = float(c_d)
+        info_["solv_free"] = f_s
+        info_["ion_free"] = f_i
+        info_["ion_charge_free"] = f_i_e
+        info_["solv_coord"] = c_s
+        info_["ion_coord"] = c_i
+        info_["ion_charge_coord"] = c_i_e
 
-            if self.saveto:
-                mode = 'a' if os.path.exists(self.csv_path) else 'w'
-                with open(self.csv_path, mode=mode, newline='') as f:
-                    writer = csv.writer(f)
-                    if mode == 'w':
-                        writer.writerow(["Name", "Skin_FSR", "Skin_ASR", "FSR_Solvent", "ASR_Solvent", "FSR_Ion", "ASR_Ion", "FSR_Ion_Charge", "ASR_Ion_Charge"])
-                    writer.writerow([
-                        os.path.basename(self.structure), str(fsr_skin), str(asr_skin),
-                        fsr_solvent, asr_solvent, fsr_ion, asr_ion, fsr_ion_charge, asr_ion_charge
-                    ])
-            os.remove(os.path.join(self.output, os.path.basename(self.structure.replace(".cif","")) + "_pacman.cif"))
-        except Exception as e:
-            print("[clean_pacman.process] Error:", e)
+        with open(os.path.join(self.output, self.prefix+".json"), "w") as f:
+            json.dump(info_, f, indent=2)
 
-    def run_fsr(self):
-        return self.run_clean(mode="FSR")
+    def run(self):
 
-    def run_asr(self):
-        return self.run_clean(mode="ASR")
-
-    def run_clean(self, mode="FSR"):
-        file_prefix = self.structure.replace(".cif", "")
         skin = self.initial_skin
-        clean_func = self.free_clean if mode == "FSR" else self.all_clean
+        atoms = read(self.cif_path)
+        charges = list(CIF.read_file(os.path.join(self.output,
+        self.prefix+"_pacman.cif")).sole_block().find_loop('_atom_site_charge'))
 
         while True:
-            result = clean_func(file_prefix, self.output, skin)
-            if result is None:
-                break
-            cleaned_skin, solvents, ions, ion_charges = result
+
+            fsr_results = self.free_clean(atoms, charges, skin)
+            skin_free, solv_free, ion_free, ion_charge_free = fsr_results
+            
             has_metals = any(
-                any(e in self.metal_list for e in re.findall(r'([A-Z][a-z]?)\d*', formula))
-                for formula in solvents
+            any(e in self.metal_list for e in re.findall(r'([A-Z][a-z]?)\d*', formula))
+            for formula in solv_free
             )
+
             if has_metals:
                 skin += 0.05
             else:
                 break
-        return skin, solvents, ions, ion_charges
+        
+        while True:
+            coor_results = self.coor_clean(atoms, charges, skin)
+            
+            skin_coor, solv_coor, ion_coor, ion_charge_coor = coor_results
+            has_metals = any(
+                            any(e in self.metal_list for e in re.findall(r'([A-Z][a-z]?)\d*', formula))
+                            for formula in solv_free
+                            )
+            if has_metals:
+                skin += 0.05
+            else:
+                break
+
+        return skin_free, skin_coor, solv_free, ion_free, ion_charge_free, solv_coor, ion_coor, ion_charge_coor
+
+
+    def free_clean(self, atoms, charges, skin):
+        
+        neighborlist = self.build_ASE_neighborlist(atoms, skin)
+        matrix = self.CustomMatrix(neighborlist, len(atoms))
+        clusters = sorted(self.find_clusters(matrix, len(atoms)),
+                            key=lambda x: len(x), reverse=True)
+
+        main_clus, ions, solvs, solvs_idx, solvs_form = [], [], [], [], []
+        ion_forms, ion_chgs = [], []
+        len_main_clus = []
+
+        for cl in clusters:
+            formula = self.cluster_to_formula(cl, atoms)
+            cluster_charge = sum([float(charges[i]) for i in cl if i < len(charges)])
+            if len(len_main_clus) > 0:
+                if len(cl) > max(len_main_clus):
+                    main_clus.append(cl)
+                    len_main_clus.append(len(cl))
+                elif len(cl) > 0.5 * max(len_main_clus):
+                    main_clus.append(cl)
+                    len_main_clus.append(len(cl))
+                elif abs(cluster_charge) > 0.1 and formula in ALLIONS:
+                    ions.append(cl)
+                    ion_forms.append(formula)
+                    ion_chgs.append(cluster_charge)
+                else:
+                    solvs.append(cl)
+                    solvs_idx.extend(cl)
+                    solvs_form.append(formula)
+            else:
+                main_clus.append(cl)
+                len_main_clus.append(len(cl))
+
+        free_output = list(itertools.chain.from_iterable(main_clus + ions))
+        write(os.path.join(self.output, self.prefix + "_FSR.cif"), atoms[free_output])
+        
+        return skin, solvs_form, ion_forms, ion_chgs
+        
+
+    def coor_clean(self, atoms, charges, skin):
+        
+        ASE_neighborlist = self.build_ASE_neighborlist(atoms, skin)
+        MetalCon, MetalAtoms, struct = self.find_metal_connected_atoms(atoms, ASE_neighborlist)
+        mat = self.CustomMatrix(ASE_neighborlist, len(atoms))
+        mam = self.mod_adjacency_matrix(mat, MetalCon, MetalAtoms, len(atoms), struct)
+        coor_clusters = sorted(self.find_clusters(mam, len(atoms)),
+                               key=lambda x: len(x), reverse=True)
+
+        main_clus, ions, solvs = [], [], []
+        ion_forms, ion_chgs = [], []
+        len_main_clus = []
+
+        for cl in coor_clusters:
+
+            formula = self.cluster_to_formula(cl, struct)
+            cluster_charge = sum([float(charges[i]) for i in cl if i < len(charges)])
+            all_charges = [float(charges[i]) for i in cl if i < len(charges)]
+            if len(len_main_clus) > 0:
+                if len(cl) > max(len_main_clus):
+                    main_clus.append(cl)
+                    len_main_clus.append(len(cl))
+                elif len(cl) > 0.5 * max(len_main_clus):
+                    main_clus.append(cl)
+                    len_main_clus.append(len(cl))
+                elif abs(cluster_charge) > 0.1 and formula in ALLIONS:
+                    print(cluster_charge)
+                    print(struct[cl])
+                    print(all_charges)
+                    ions.append(cl)
+                    ion_forms.append(formula)
+                    ion_chgs.append(cluster_charge)
+                else:
+                    formula = self.cluster_to_formula(cl, struct)
+                    if formula not in solvs:
+                        solvs.append(formula)
+            else:
+                main_clus.append(cl)
+                len_main_clus.append(len(cl))
+
+        final_atoms = list(itertools.chain.from_iterable(main_clus+ions))
+
+        write(os.path.join(self.output, self.prefix+"_ASR.cif"), struct[final_atoms])
+
+        return skin, solvs, ion_forms, ion_chgs
+    
 
     def build_ASE_neighborlist(self, cif, skin):
         radii = [self.cambridge_radii[i] for i in cif.get_chemical_symbols()]
@@ -764,73 +861,35 @@ class clean_pacman():
         count = collections.Counter(symbols)
         return ''.join([el + (str(count[el]) if count[el] > 1 else '') for el in sorted(count)])
 
-    def free_clean(self, input_file, save_folder, skin):
-        try:
-            cif = read(input_file + ".cif")
-            charges = list(CIF.read_file(os.path.join(save_folder, os.path.basename(input_file) + "_pacman.cif")).sole_block().find_loop('_atom_site_charge'))
+    def find_metal_connected_atoms(self, structure, neighborlist):
+        metal_connected_atoms = []
+        metal_atoms = []
+        for i, elem in enumerate(structure.get_chemical_symbols()):
+            if elem in self.metal_list:
+                neighbors, _ = neighborlist.get_neighbors(i)
+                metal_connected_atoms.append(neighbors)
+                metal_atoms.append(i)
+        return metal_connected_atoms, metal_atoms, structure
 
-            neighborlist = self.build_ASE_neighborlist(cif, skin)
-            matrix = self.CustomMatrix(neighborlist, len(cif))
-            clusters = sorted(self.find_clusters(matrix, len(cif)), key=lambda x: len(x), reverse=True)
-
-            main_clusters, ions, solvents = [], [], []
-            ion_formulas, ion_charges = [], []
-
-            for cl in clusters:
-                formula = self.cluster_to_formula(cl, cif)
-                cluster_charge = sum([float(charges[i]) for i in cl if i < len(charges)])
-
-                if not main_clusters:
-                    main_clusters.append(cl)
-                elif len(cl) > 0.5 * len(main_clusters[0]):
-                    main_clusters.append(cl)
-                elif abs(cluster_charge) > 0.1:
-                    ions.append(cl)
-                    ion_formulas.append(formula)
-                    ion_charges.append(cluster_charge)
-                else:
-                    solvents.append(formula)
-
-            final_atoms = list(itertools.chain.from_iterable(main_clusters + ions))
-            suffix = "_FSR_ION.cif" if ions else "_FSR.cif"
-            write(os.path.join(save_folder, os.path.basename(input_file) + suffix), cif[final_atoms])
-            return skin, solvents, ion_formulas, ion_charges
-        except Exception as e:
-            print("[free_clean]", input_file, "failed:", e)
-
-    def all_clean(self, input_file, save_folder, skin):
-        try:
-            cif = read(input_file + ".cif")
-            charges = list(CIF.read_file(os.path.join(save_folder, os.path.basename(input_file) + "_pacman.cif")).sole_block().find_loop('_atom_site_charge'))
-
-            neighborlist = self.build_ASE_neighborlist(cif, skin)
-            matrix = self.CustomMatrix(neighborlist, len(cif))
-            clusters = sorted(self.find_clusters(matrix, len(cif)), key=lambda x: len(x), reverse=True)
-
-            main_clusters, ions, solvents = [], [], []
-            ion_formulas, ion_charges = [], []
-
-            for cl in clusters:
-                formula = self.cluster_to_formula(cl, cif)
-                cluster_charge = sum([float(charges[i]) for i in cl if i < len(charges)])
-
-                if not main_clusters:
-                    main_clusters.append(cl)
-                elif len(cl) > 0.5 * len(main_clusters[0]):
-                    main_clusters.append(cl)
-                elif abs(cluster_charge) > 0.1:
-                    ions.append(cl)
-                    ion_formulas.append(formula)
-                    ion_charges.append(cluster_charge)
-                else:
-                    solvents.append(formula)
-
-            final_atoms = list(itertools.chain.from_iterable(main_clusters + ions))
-            suffix = "_ASR_ION.cif" if ions else "_ASR.cif"
-            write(os.path.join(save_folder, os.path.basename(input_file) + suffix), cif[final_atoms])
-            return skin, solvents, ion_formulas, ion_charges
-        except Exception as e:
-            print("[all_clean]", input_file, "failed:", e)
+    def mod_adjacency_matrix(self, adj_matrix, MetalConAtoms, MetalAtoms, atom_count, struct):
+        clusters = self.find_clusters(adj_matrix, atom_count)
+        for i, element_1 in enumerate(MetalAtoms):
+            for j, element_2 in enumerate(MetalConAtoms[i]):
+                if struct[element_2].symbol == "O":
+                    tmp = len(self.find_clusters(adj_matrix, atom_count))
+                    adj_matrix[element_2][element_1] = 0
+                    adj_matrix[element_1][element_2] = 0
+                    new_clusters = self.find_clusters(adj_matrix, atom_count)
+                    if tmp == len(new_clusters):
+                        adj_matrix[element_2][element_1] = 1
+                        adj_matrix[element_1][element_2] = 1
+                    for ligand in new_clusters:
+                        if ligand not in clusters:
+                            tmp3 = struct[ligand].get_chemical_symbols()
+                            if "O" in tmp3 and "H" in tmp3 and len(tmp3) == 2:
+                                adj_matrix[element_2][element_1] = 1
+                                adj_matrix[element_1][element_2] = 1
+        return adj_matrix
 
 try:
     from ccdc import io
