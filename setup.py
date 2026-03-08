@@ -6,8 +6,8 @@ readme_path = here / "README.md"
 long_description = readme_path.read_text(encoding="utf-8") if readme_path.exists() else ""
 
 setup(
-    name='CoREMOF_tools',
-    version='0.3.3',
+    name='coremof_tools',
+    version='0.3.4',
     author='Guobin Zhao',
     author_email='sxmzhaogb@gmail.com',
     description='Python API for CoRE MOF DB',
