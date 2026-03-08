@@ -1,5 +1,7 @@
+<div align="center">
 <img src="https://raw.githubusercontent.com/sxm13/pypi-dev/main/logos/coremof_tools.png" alt="CoRE MOF Tools logo" width="500"/>
-
+</div> 
+                                                             
 [![Static Badge](https://img.shields.io/badge/chemrxiv-2024.nvmnr.v2-brightgreen?style=flat)](https://doi.org/10.26434/chemrxiv-2024-nvmnr-v2)
 [![Docs](https://img.shields.io/badge/API-Docs-blue?logo=readthedocs&logoColor=white)](https://coremof-tools.readthedocs.io/en/latest/index.html#)
 ![GitHub repo size](https://img.shields.io/github/repo-size/sxm13/CoREMOF_tools?logo=github&logoColor=white&label=Repo%20Size)
@@ -12,8 +14,14 @@
 <!-- [![codecov](https://codecov.io/gh/sxm13/CoREMOF_tools/branch/main/graph/badge.svg)](https://codecov.io/gh/sxm13/CoREMOF_tools)
 [![Build Status](https://travis-ci.org/sxm13/CoREMOF_tools.svg?branch=master)](https://travis-ci.org/sxm13/CoREMOF_toolst) -->
 
-**Develop by [Guobin Zhao](https://github.com/sxm13)**
+**Develop by [Guobin Zhao](https://github.com/sxm13)**                                     
+                                                                 
+The CoRE MOF database can be found in [Zenodo](https://zenodo.org/communities/core-mofs/records?q=&l=list&p=1&s=10)                                       
+<div align="center">                   
+<img src="https://raw.githubusercontent.com/sxm13/pypi-dev/main/logos/coremof.png" alt="CoRE MOF logo" width="500"/>
+</div> 
 
+                                                                                  
 #### Installation                                                                                    
 This API includes tools developed to collect, curate, and classify Computation-Ready, Experimental MOF database.    
 a. You need to install the [CSD software and python API](https://downloads.ccdc.cam.ac.uk/documentation/API/installation_notes.html) before downloading the full CoRE MOF database.                                                            
