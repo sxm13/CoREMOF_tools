@@ -266,8 +266,8 @@ def RACs(structure):
                                                         structure,
                                                         3,
                                                         path='tmp_rac',
-                                                        xyzpath=f'tmp_rac/{name}.xyz',
-                                                        max_num_atoms=6000
+                                                        xyz_path=f'tmp_rac/{name}.xyz',
+                                                        max_num_atoms=60000
                                                         )
                                                         
     descriptor_data = dict(zip(full_names, full_descriptors))
