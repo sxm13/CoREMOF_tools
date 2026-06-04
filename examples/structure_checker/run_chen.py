@@ -45,7 +45,7 @@ def Chen_Manz(file):
                 d = atoms.get_distance(a, b, mic=True)
                 if sym[a] == 'H':
                     if d <= (0.3 + ATR.get(sym[a], 0.8) + ATR.get(sym[b], 0.8)):
-                        H_connected.append(b)
+                        H_connected.append(sym[b])
                 if d < 0.5 * (ATR.get(sym[a], 0.8) + ATR.get(sym[b], 0.8)):
                     overlapping = True
                 if d <= (ATR.get(sym[a], 0.8) + ATR.get(sym[b], 0.8)):

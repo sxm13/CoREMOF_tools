@@ -576,7 +576,7 @@ class mof_check():
                     d = atoms.get_distance(a, b, mic = True)
                     if sym[a] == 'H':
                         if d <= (0.3 + ATR[sym[a]] + ATR[sym[b]]):
-                            H_connected.append(b)
+                            H_connected.append(sym[b])
                     if d < 0.5*(ATR[sym[a]] + ATR[sym[b]]):
                         has_problem.append("overlapping")
                     if d <= (ATR[sym[a]] + ATR[sym[b]]):
