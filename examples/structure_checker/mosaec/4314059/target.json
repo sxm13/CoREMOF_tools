@@ -1,0 +1,83 @@
+{
+  "name": "target",
+  "impossible": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "unknown": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "zero_valence": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "noint_flag": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "low_prob_1": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "low_prob_2": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "low_prob_3": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  },
+  "low_prob_multi": {
+    "Cu1": "GOOD",
+    "Cu3": "GOOD",
+    "Cu4": "GOOD",
+    "Cu2": "GOOD",
+    "Cu5": "GOOD",
+    "Cu6": "GOOD",
+    "Cu7": "GOOD",
+    "Cu8": "GOOD"
+  }
+}

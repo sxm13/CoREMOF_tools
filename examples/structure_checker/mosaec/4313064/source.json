@@ -1,0 +1,67 @@
+{
+  "name": "source",
+  "impossible": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "unknown": {
+    "Ni1": "BAD",
+    "Ni5": "BAD",
+    "Ni6": "BAD",
+    "Ni3": "BAD",
+    "Ni4": "BAD",
+    "Ni2": "BAD"
+  },
+  "zero_valence": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "noint_flag": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "low_prob_1": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "low_prob_2": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "low_prob_3": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  },
+  "low_prob_multi": {
+    "Ni1": "GOOD",
+    "Ni5": "GOOD",
+    "Ni6": "GOOD",
+    "Ni3": "GOOD",
+    "Ni4": "GOOD",
+    "Ni2": "GOOD"
+  }
+}

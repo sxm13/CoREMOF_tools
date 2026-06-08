@@ -4071,9 +4071,10 @@ def main(CIF_FOLDER, MAX_WORKERS, OUTPUT_DIR):
                 json.dump(result_dict, jf, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
-    CIF_FOLDER = r"D:\GithubDesk\FT-LLM-MOF\use\ToBaCCo"
-    MAX_WORKERS = 8
-    OUTPUT_DIR  = r"D:\GithubDesk\FT-LLM-MOF\mosaec_tobacco"
+
+    CIF_FOLDER = r"D:\GithubDesk\CoREMOF_tools\examples\structure_checker\mosaec\4314059"
+    MAX_WORKERS = 3
+    OUTPUT_DIR  = r"D:\GithubDesk\CoREMOF_tools\examples\structure_checker\mosaec\4314059"
 
     main(CIF_FOLDER, MAX_WORKERS, OUTPUT_DIR)
     
@@ -4110,4 +4111,4 @@ if __name__ == "__main__":
                                         "low_prob_3",
                                         "low_prob_multi"
                                         ]
-                                        ).to_csv("ToBaCCo_MOSAEC.csv", index=False)
+                                        ).to_csv("MOSAEC_4314059.csv", index=False)
